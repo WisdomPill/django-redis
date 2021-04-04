@@ -57,10 +57,6 @@ class DjangoRedisCacheTestEscapePrefix(unittest.TestCase):
         self.addCleanup(cm.disable)
 
         self.cache = caches["default"]
-        try:
-            self.cache.clear()
-        except Exception:
-            pass
         self.other = caches["with_prefix"]
 
     def tearDown(self):
