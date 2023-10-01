@@ -9,4 +9,4 @@ class ConnectionInterrupted(Exception):
 
 
 class CompressorError(Exception):
-    pass
+    ...

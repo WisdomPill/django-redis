@@ -2,12 +2,15 @@ import random
 import socket
 import time
 from collections import OrderedDict
+from typing import Any, Optional, Union
 
 from django.conf import settings
+from redis import Redis
 from redis.exceptions import ConnectionError, ResponseError, TimeoutError
+from redis.typing import AbsExpiryT, EncodableT, ExpiryT, KeyT
 
-from ..exceptions import ConnectionInterrupted
-from .default import DEFAULT_TIMEOUT, DefaultClient
+from django_redis.exceptions import ConnectionInterrupted
+from django_redis.client.default import DEFAULT_TIMEOUT, DefaultClient
 
 _main_exceptions = (ConnectionError, ResponseError, TimeoutError, socket.timeout)
 
@@ -61,13 +64,13 @@ class HerdClient(DefaultClient):
 
     def set(
         self,
-        key,
-        value,
-        timeout=DEFAULT_TIMEOUT,
-        version=None,
-        client=None,
-        nx=False,
-        xx=False,
+        key: KeyT,
+        value: Any,
+        timeout: Union[ExpiryT, None] = DEFAULT_TIMEOUT,
+        version: Optional[int] = None,
+        client: Optional[Redis] = None,
+        nx: bool = False,
+        xx: bool = False,
     ):
 
         if timeout is DEFAULT_TIMEOUT:
@@ -91,7 +94,7 @@ class HerdClient(DefaultClient):
             key, packed, timeout=real_timeout, version=version, client=client, nx=nx
         )
 
-    def get(self, key, default=None, version=None, client=None):
+    def get(self, key: KeyT, default=None, version=None, client=None):
         packed = super().get(key, default=default, version=version, client=client)
         val, refresh = self._unpack(packed)
 
